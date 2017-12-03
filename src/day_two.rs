@@ -6,7 +6,7 @@ pub fn row_diff(row: &[u32]) -> u32 {
     row.iter().max().expect("no max!") - row.iter().min().expect("no min!")
 }
 
-pub fn day_two_checksum(s: &[&[u32]]) -> u32 {
+pub fn part_two_checksum(s: &[&[u32]]) -> u32 {
     s.iter().map(|x| row_division(x)).sum()
 }
 
@@ -63,7 +63,7 @@ mod tests {
 
         #[test]
         fn the_answer_is() {
-            assert_eq!(day_two_checksum(PUZZLE_INPUT), 221);
+            assert_eq!(part_two_checksum(PUZZLE_INPUT), 221);
         }
     }
 }
