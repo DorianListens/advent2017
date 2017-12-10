@@ -10,10 +10,60 @@ fn manhattan_distance(point: Point) -> u32 {
     (point.x.abs() + point.y.abs()) as u32
 }
 
+fn first_value_larger_than(n: u32) -> u32 {
+    let spiral = Spiral::part_two();
+    for tile in spiral {
+        if tile.number > n {
+            return tile.number;
+        }
+    }
+
+    0
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Copy)]
 struct Point {
     x: i32,
     y: i32,
+}
+
+impl Point {
+    pub fn neighbours(&self) -> Vec<Point> {
+        vec![
+            Point {
+                x: self.x - 1,
+                y: self.y - 1,
+            },
+            Point {
+                x: self.x - 1,
+                y: self.y,
+            },
+            Point {
+                x: self.x - 1,
+                y: self.y + 1,
+            },
+            Point {
+                x: self.x,
+                y: self.y - 1,
+            },
+            Point {
+                x: self.x,
+                y: self.y + 1,
+            },
+            Point {
+                x: self.x + 1,
+                y: self.y + 1,
+            },
+            Point {
+                x: self.x + 1,
+                y: self.y,
+            },
+            Point {
+                x: self.x + 1,
+                y: self.y - 1,
+            },
+        ]
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -38,6 +88,48 @@ enum Direction {
     Down,
 }
 
+use self::Direction::*;
+
+trait Incrementer {
+    fn next_number(&mut self, tile: Tile, next_point: Point) -> u32;
+}
+
+struct SimpleIncrementer;
+
+impl Incrementer for SimpleIncrementer {
+    fn next_number(&mut self, tile: Tile, next_point: Point) -> u32 {
+        tile.number + 1
+    }
+}
+
+struct ComplexIncrementor {
+    past_values: Vec<Tile>
+}
+
+impl ComplexIncrementor {
+    fn new() -> ComplexIncrementor {
+        ComplexIncrementor {
+            past_values: vec![],
+        }
+    }
+}
+
+impl Incrementer for ComplexIncrementor {
+    fn next_number(&mut self, tile: Tile, next_point: Point) -> u32 {
+        self.past_values.push(tile);
+
+        let mut num = 0;
+        let neighbours = next_point.neighbours();
+        for v in self.past_values.clone() {
+            if neighbours.contains(&v.point) {
+                num += v.number;
+            }
+        }
+
+        num
+    }
+}
+
 pub struct Spiral {
     current: Tile,
     next: Tile,
@@ -45,9 +137,8 @@ pub struct Spiral {
     x_steps: u32,
     y_steps: u32,
     steps_taken: u32,
+    incrementer: Box<Incrementer>,
 }
-
-use self::Direction::*;
 
 impl Spiral {
     pub fn new() -> Spiral {
@@ -58,6 +149,19 @@ impl Spiral {
             x_steps: 1,
             y_steps: 0,
             steps_taken: 0,
+            incrementer: Box::new(SimpleIncrementer {}),
+        }
+    }
+
+    pub fn part_two() -> Spiral {
+        Spiral {
+            current: Tile::one(),
+            next: Tile::one(),
+            dir: Direction::Down,
+            x_steps: 1,
+            y_steps: 0,
+            steps_taken: 0,
+            incrementer: Box::new(ComplexIncrementor::new()),
         }
     }
 
@@ -95,7 +199,7 @@ impl Spiral {
 
        self.steps_taken += 1;
        Tile {
-           number: self.current.number + 1,
+           number: self.incrementer.next_number(self.current, next_point),
            point: next_point,
        }
     }
@@ -129,7 +233,7 @@ mod tests {
         fn the_first_number_is_at_zero_zero() {
             let mut spiral = Spiral::new();
 
-            let first = spiral.next().expect("Sprial is infinite");
+            let first = spiral.next().expect("Spiral is infinite");
 
             assert_eq!(first.point, Point { x: 0 , y: 0 });
             assert_eq!(first.number, 1);
@@ -140,7 +244,7 @@ mod tests {
             let mut spiral = Spiral::new();
 
             spiral.next();
-            let second = spiral.next().expect("Sprial is infinite");
+            let second = spiral.next().expect("Spiral is infinite");
 
             assert_eq!(second.point, Point { x: 1 , y: 0 });
         }
@@ -151,7 +255,7 @@ mod tests {
 
             spiral.next();
             spiral.next();
-            let third = spiral.next().expect("Sprial is infinite");
+            let third = spiral.next().expect("Spiral is infinite");
 
             assert_eq!(third.point, Point { x: 1 , y: 1 });
         }
@@ -163,7 +267,7 @@ mod tests {
             spiral.next();
             spiral.next();
             spiral.next();
-            let fourth = spiral.next().expect("Sprial is infinite");
+            let fourth = spiral.next().expect("Spiral is infinite");
 
             assert_eq!(fourth.point, Point { x: 0 , y: 1 });
         }
@@ -176,7 +280,7 @@ mod tests {
                 spiral.next();
             }
 
-            let tile = spiral.next().expect("Sprial is infinite");
+            let tile = spiral.next().expect("Spiral is infinite");
 
             assert_eq!(tile.point, Point { x: 2, y: -2 });
             assert_eq!(tile.number, 25);
@@ -212,6 +316,59 @@ mod tests {
         #[test]
         fn the_answer_is() {
             assert_eq!(steps_away(277678), 475);
+        }
+    }
+
+    mod part_two {
+        use day_three::*;
+
+        #[test]
+        fn first_two_squares_are_both_one() {
+            let mut spiral = Spiral::part_two();
+            assert_eq!(spiral.next().expect("infinite").number, 1);
+            assert_eq!(spiral.next().expect("infinite").number, 1);
+        }
+
+        #[test]
+        fn third_tile_is_two() {
+            let mut spiral = Spiral::part_two();
+            spiral.next();
+            spiral.next();
+            assert_eq!(spiral.next().expect("infinite").number, 2);
+        }
+
+        #[test]
+        fn tile_four_is_four() {
+            let mut spiral = Spiral::part_two();
+            spiral.next();
+            spiral.next();
+            spiral.next();
+            assert_eq!(spiral.next().expect("infinite").number, 4);
+        }
+
+        #[test]
+        fn tile_nine_is_twenty_five() {
+            let mut spiral = Spiral::part_two();
+            for _ in 0..8 {
+                spiral.next();
+            }
+
+            assert_eq!(spiral.next().expect("infinite").number, 25);
+        }
+
+        #[test]
+        fn first_value_larger_than_five_is_ten() {
+            assert_eq!(first_value_larger_than(5), 10);
+        }
+
+        #[test]
+        fn first_value_larger_than_eighty_is_122() {
+            assert_eq!(first_value_larger_than(80), 122);
+        }
+
+        #[test]
+        fn the_answer_is() {
+            assert_eq!(first_value_larger_than(277678), 279138);
         }
     }
 }
