@@ -1,6 +1,6 @@
 use std::iter::Iterator;
 
-fn steps_away(n: u32) -> u32 {
+pub fn steps_away(n: u32) -> u32 {
     let mut spiral = Spiral::new();
     let tile = spiral.find(|x| x.number == n).expect("infinite sequence");
     manhattan_distance(tile.point)
@@ -10,7 +10,7 @@ fn manhattan_distance(point: Point) -> u32 {
     (point.x.abs() + point.y.abs()) as u32
 }
 
-fn first_value_larger_than(n: u32) -> u32 {
+pub fn first_value_larger_than(n: u32) -> u32 {
     let spiral = Spiral::part_two();
     for tile in spiral {
         if tile.number > n {
@@ -97,7 +97,7 @@ trait Incrementer {
 struct SimpleIncrementer;
 
 impl Incrementer for SimpleIncrementer {
-    fn next_number(&mut self, tile: Tile, next_point: Point) -> u32 {
+    fn next_number(&mut self, tile: Tile, _: Point) -> u32 {
         tile.number + 1
     }
 }
