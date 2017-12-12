@@ -27,10 +27,7 @@ struct Processor {
 
 impl Processor {
     fn new(list: Vec<i32>) -> Processor {
-        Processor {
-            list,
-            index: 0,
-        }
+        Processor { list, index: 0 }
     }
 
     fn process(&mut self) -> Option<usize> {
@@ -41,7 +38,10 @@ impl Processor {
         self.p(Processor::increment_or_decrement)
     }
 
-    fn p<T>(&mut self, f: T) -> Option<usize> where T: Fn(&mut Processor, i32) {
+    fn p<T>(&mut self, f: T) -> Option<usize>
+    where
+        T: Fn(&mut Processor, i32),
+    {
         if self.list.len() > self.index {
             let steps_to_take = self.list[self.index];
             f(self, steps_to_take);
@@ -67,4 +67,3 @@ impl Processor {
         }
     }
 }
-

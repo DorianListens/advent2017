@@ -103,7 +103,7 @@ impl Incrementer for SimpleIncrementer {
 }
 
 struct ComplexIncrementor {
-    past_values: Vec<Tile>
+    past_values: Vec<Tile>,
 }
 
 impl ComplexIncrementor {
@@ -190,18 +190,30 @@ impl Spiral {
     }
 
     fn next_step(&mut self) -> Tile {
-       let next_point = match self.dir {
-           Up => Point { x: self.current.point.x, y: self.current.point.y + 1 },
-           Down => Point { x: self.current.point.x, y: self.current.point.y - 1 },
-           Left => Point { x: self.current.point.x - 1, y: self.current.point.y },
-           Right => Point { x: self.current.point.x + 1, y: self.current.point.y },
-       };
+        let next_point = match self.dir {
+            Up => Point {
+                x: self.current.point.x,
+                y: self.current.point.y + 1,
+            },
+            Down => Point {
+                x: self.current.point.x,
+                y: self.current.point.y - 1,
+            },
+            Left => Point {
+                x: self.current.point.x - 1,
+                y: self.current.point.y,
+            },
+            Right => Point {
+                x: self.current.point.x + 1,
+                y: self.current.point.y,
+            },
+        };
 
-       self.steps_taken += 1;
-       Tile {
-           number: self.incrementer.next_number(self.current, next_point),
-           point: next_point,
-       }
+        self.steps_taken += 1;
+        Tile {
+            number: self.incrementer.next_number(self.current, next_point),
+            point: next_point,
+        }
     }
 
     fn next_dir(&self) -> Direction {
@@ -235,7 +247,7 @@ mod tests {
 
             let first = spiral.next().expect("Spiral is infinite");
 
-            assert_eq!(first.point, Point { x: 0 , y: 0 });
+            assert_eq!(first.point, Point { x: 0, y: 0 });
             assert_eq!(first.number, 1);
         }
 
@@ -246,7 +258,7 @@ mod tests {
             spiral.next();
             let second = spiral.next().expect("Spiral is infinite");
 
-            assert_eq!(second.point, Point { x: 1 , y: 0 });
+            assert_eq!(second.point, Point { x: 1, y: 0 });
         }
 
         #[test]
@@ -257,7 +269,7 @@ mod tests {
             spiral.next();
             let third = spiral.next().expect("Spiral is infinite");
 
-            assert_eq!(third.point, Point { x: 1 , y: 1 });
+            assert_eq!(third.point, Point { x: 1, y: 1 });
         }
 
         #[test]
@@ -269,7 +281,7 @@ mod tests {
             spiral.next();
             let fourth = spiral.next().expect("Spiral is infinite");
 
-            assert_eq!(fourth.point, Point { x: 0 , y: 1 });
+            assert_eq!(fourth.point, Point { x: 0, y: 1 });
         }
 
         #[test]

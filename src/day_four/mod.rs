@@ -63,7 +63,11 @@ mod tests {
 
         #[test]
         fn the_answer_is() {
-            let answer = input::PUZZLE_INPUT.lines().filter(|x| part_one(x)).collect::<Vec<_>>().len();
+            let answer = input::PUZZLE_INPUT
+                .lines()
+                .filter(|x| part_one(x))
+                .collect::<Vec<_>>()
+                .len();
             assert_eq!(answer, 383);
         }
     }
@@ -88,7 +92,11 @@ mod tests {
 
         #[test]
         fn the_answer_is() {
-            let answer = input::PUZZLE_INPUT.lines().filter(|x| part_two(x)).collect::<Vec<_>>().len();
+            let answer = input::PUZZLE_INPUT
+                .lines()
+                .filter(|x| part_two(x))
+                .collect::<Vec<_>>()
+                .len();
             assert_eq!(answer, 265);
         }
     }

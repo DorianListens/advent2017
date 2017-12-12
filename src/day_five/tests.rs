@@ -36,8 +36,9 @@ mod part_two {
     }
 
     #[test]
+    #[ignore]
     fn the_answer_is() {
         let list = input::input.to_vec();
-        assert_eq!(count_part_two(list),  24568703);
+        assert_eq!(count_part_two(list), 24568703);
     }
 }
