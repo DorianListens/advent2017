@@ -25,3 +25,19 @@ mod part_one {
         assert_eq!(count_jumps_to_exit(list), 351282);
     }
 }
+
+mod part_two {
+    use day_five::*;
+
+    #[test]
+    fn the_example_takes_five_steps() {
+        let list = vec![0, 3, 0, 1, -3];
+        assert_eq!(count_part_two(list), 10);
+    }
+
+    #[test]
+    fn the_answer_is() {
+        let list = input::input.to_vec();
+        assert_eq!(count_part_two(list),  24568703);
+    }
+}
