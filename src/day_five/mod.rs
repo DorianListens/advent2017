@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests;
-mod input;
+pub mod input;
 
 pub fn count_jumps_to_exit(list: Vec<i32>) -> u32 {
     let mut p = Processor::new(list);
@@ -55,7 +55,7 @@ impl Processor {
         None
     }
 
-    fn increment(&mut self, steps_to_take: i32) {
+    fn increment(&mut self, _: i32) {
         self.list[self.index] += 1;
     }
 

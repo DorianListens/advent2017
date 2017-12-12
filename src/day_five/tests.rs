@@ -21,7 +21,7 @@ mod part_one {
 
     #[test]
     fn the_answer_is() {
-        let list = input::input.to_vec();
+        let list = input::INPUT.to_vec();
         assert_eq!(count_jumps_to_exit(list), 351282);
     }
 }
@@ -38,7 +38,7 @@ mod part_two {
     #[test]
     #[ignore]
     fn the_answer_is() {
-        let list = input::input.to_vec();
+        let list = input::INPUT.to_vec();
         assert_eq!(count_part_two(list), 24568703);
     }
 }

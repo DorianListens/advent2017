@@ -1,4 +1,4 @@
-pub const input: &[i32] = &[
+pub const INPUT: &[i32] = &[
     2,
     0,
     0,
